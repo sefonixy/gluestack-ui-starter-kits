@@ -1,0 +1,13 @@
+# OS
+.DS_Store
+
+# AI tooling
+.claude/
+.gemini/
+.cloud/
+
+# dependencies
+node_modules/
+
+# lockfiles (managed per workspace)
+yarn.lock
