@@ -1,2 +1,2 @@
-import { ForgotPassword } from "@/screens/auth/forgot-password";
+import { ForgotPassword } from "./screens/forgot-password";
 export default ForgotPassword;
