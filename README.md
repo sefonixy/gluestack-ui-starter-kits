@@ -1,42 +1,37 @@
 # GamaLearn UI — Component Library & Showcase Monorepo
 
-Welcome to the **GamaLearn UI** monorepo. This project is a single-source-of-truth workspace containing a custom design system, React Native component library, and an Expo application showcase. It is fully optimized to run seamlessly on both **macOS** and **Windows** development environments.
+Welcome to the **GamaLearn UI** monorepo. This project is a single-source-of-truth workspace containing a custom design system, React Native component library, and an Expo application showcase.
+
+This codebase is designed and verified to run seamlessly on both **Windows (10/11)** and **macOS** development environments.
 
 ---
 
 ## 🏗 Repository Architecture
 
-The monorepo structure is located in the `gamalearn-ui` directory:
-
 ```text
 gamalearn-ui/
 ├── apps/
 │   └── expo-app/          # Expo showcase app (Sign In, Sign Up, God Card)
-├── packages/
-│   ├── components/       # Core design system UI components (gluestack-ui based)
-│   ├── screens/          # Shared screens and complex layout cards
-│   ├── hooks/            # Shared custom React hooks
-│   └── shared/           # Common assets, configurations, and utilities
-├── package.json          # Monorepo workspaces definition and scripts
-└── yarn.lock
+└── packages/
+    └── components/       # Core React Native component library (gluestack-ui based)
 ```
 
 ---
 
-## ⚡️ Quick Start Guide
+## 💻 Environment Support Matrix
 
-Follow these steps to set up and run the showcase application on your machine.
+| OS | Supported Shells | Required Node Version | Package Manager | Native Emulators |
+| :--- | :--- | :--- | :--- | :--- |
+| **Windows 10/11** | PowerShell, CMD, Git Bash | Node `>= 18.x` | Yarn `v1.22.x` | Android Studio (AVD) |
+| **macOS** | Zsh, Bash | Node `>= 18.x` | Yarn `v1.22.x` | iOS Simulator, Android AVD |
 
-### 📋 Prerequisites
+---
 
-Before starting, ensure you have the following installed:
-- **Node.js** (version 18 or higher)
-- **Yarn** (Classic v1.x)
-- **Expo Go** app (optional, for testing on physical iOS/Android devices)
+## ⚡️ Setup & Running Guide
 
-### 📥 1. Installation
+### 1. Install Dependencies (Cross-Platform)
 
-Navigate into the `gamalearn-ui` directory and install the dependencies:
+From the root of the project, navigate to the `gamalearn-ui` directory and install the packages:
 
 ```bash
 cd gamalearn-ui
@@ -44,39 +39,42 @@ yarn install
 ```
 
 > [!NOTE]
-> Yarn workspaces will automatically symlink packages in `packages/*` to `node_modules` so they resolve correctly across all applications.
+> Yarn workspaces will automatically configure symlinks for `@/components` under the local `node_modules` so that imports work out of the box on both Windows and macOS filesystems.
 
-### 🚀 2. Running the Expo Showcase
+### 2. Start the Expo Showcase App
 
-To start the development server, run:
+Navigate to the `gamalearn-ui/apps/expo-app` directory or run from the monorepo root:
 
+#### **From Monorepo Root (`gamalearn-ui/`)**:
 ```bash
 yarn run:expo
 ```
 
-This starts the Expo CLI. You can then:
-- Press **`w`** to open the showcase in your web browser.
-- Press **`a`** to open it on an Android emulator or device.
-- Press **`i`** to open it on an iOS simulator.
-- Scan the QR code with your phone's camera or Expo Go app to test on a physical device.
+#### **From Expo App Directory (`gamalearn-ui/apps/expo-app/`)**:
+```bash
+yarn start --clear
+```
 
 ---
 
-## 🪟 Windows Compatibility Features
+## 🪟 Windows Execution & Compatibility Notes
 
-Developing React Native / Expo projects in a monorepo on Windows often comes with unique challenges. This project has been pre-configured to handle them automatically:
+To ensure Windows developers can run and compile the project without errors:
 
-1. **Cross-Platform Environment Variables (`cross-env`)**:
-   Windows Command Prompt and PowerShell do not support inline environment variables (e.g., `EXPO_USE_METRO_WORKSPACE_ROOT=1 npx expo start`). We use `cross-env` to ensure these variables are injected correctly on all shells.
+1. **Environment Variables**:
+   We use `cross-env` inside the `package.json` scripts of `apps/expo-app`. This ensures that setting `EXPO_USE_METRO_WORKSPACE_ROOT=1` succeeds regardless of whether you are using Windows Command Prompt (CMD), PowerShell, or Git Bash.
    
-2. **Platform-Independent Metro Resolution**:
-   The Metro bundler config (`gamalearn-ui/apps/expo-app/metro.config.js`) uses Node's standard `path` package (`path.resolve` and `__dirname`) to dynamically resolve workspace roots, automatically handling Windows backslash (`\`) and macOS forward slash (`/`) path separators.
+2. **Metro Resolution**:
+   The Metro configuration (`apps/expo-app/metro.config.js`) uses Node's native `path` module. It dynamically resolves path references using the correct path separator (`\` for Windows and `/` for macOS/Linux) to avoid bundle-time resolution failures.
 
-3. **Workspace Node Modules Order**:
-   Metro is configured with `nodeModulesPaths` pointing to both the local app `node_modules` and the monorepo root `node_modules` to guarantee seamless dependency resolution under Windows filesystems.
+3. **Clearing Cache**:
+   If you rename directories or pull major package updates on Windows, old filesystems and bundler cache files can cause path mismatch errors. Run the dev server with the clear flag to resolve this:
+   ```bash
+   yarn start --clear
+   ```
 
----
-
-## 🎨 Design Theme & Colors
-
-The design tokens and colors are based on the CheckPoint Design System, configured using Tailwind CSS and gluestack-ui. For detailed steps on modifying color palettes, configuring typography, and managing design token mappings, refer to [THEME_WALKTHROUGH.md](./THEME_WALKTHROUGH.md).
+4. **PowerShell Script Policy Warning (Windows-specific)**:
+   If you receive an error in PowerShell stating that execution of scripts is disabled on your system, open PowerShell as an Administrator and run:
+   ```powershell
+   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
+   ```
